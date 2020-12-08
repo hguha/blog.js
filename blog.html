@@ -3,21 +3,23 @@
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.10.1/css/all.css">
   <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans">
+  <title>Sample Blog</title>
 </head>
 <body>
   <!-- Customize the sidebar! Add images! Links! Go wild! The filters are dynamically generated, but the rest is up to you -->
   <div id="sidebar">
-      <div class="welcome">SAMPLE BLOG</div>
+      <div id="welcome">SAMPLE BLOG</div>
       <p id="subtitle">Looking for some advice on tech? Money management? A place to eat? This blog has got you covered.</p>
       <div id="filter"></div>
   </div>
   
-  <div id="content"></div>
+  <div id="content"></div> <!-- Your posts will appear in here-->
+
   <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
   <script src="blog.js"></script> 
   <script>
-    //Define your filters here
-    filters = {
+    //TO CUSTOMIZE
+    blogFilters = {
       review: "Reviews",
       tutorial: "Tutorials",
       advice: "Advice",
@@ -25,7 +27,15 @@
     }
     
     //create Blog
-    let blog = new Blog(filters);
+    const blog = new Blog({
+      title: "My Title",
+      subtitle: "This is the subtitle to my blog!",
+      filters: blogFilters,
+      postsFolder: "posts",
+      postPrefix: "post"
+
+
+    });
 
   </script>
 </body>

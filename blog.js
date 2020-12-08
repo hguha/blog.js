@@ -1,13 +1,21 @@
 class Blog {
 
-  constructor(filters) {
+  constructor(params) {
     this.numBlogs = 0;
     this.blogs;
-    this.filters = filters
+    this.filters = params.filters;
+    this.title = params.title;
+    this.subtitle = params.subtitle;
+    this.postsFolder = params.postsFolder;
+    this.postPrefix = params.postPrefix;
     this.setupBlog();
   }
 
   async setupBlog() {
+    document.title = this.title;
+    document.getElementById("subtitle").innerHTML = this.subtitle;
+    document.getElementById("welcome").innerHTML = this.title;
+
     this.numBlogs = await this.getNumBlogs() - 1;
     this.blogs = await this.getBlogs();
     if(window.location.hash) {
@@ -22,7 +30,7 @@ class Blog {
     var counter = 1;
     while(true) {
           try {
-              await $.get( "posts/post"+counter+".html", function() {
+              await $.get( `${this.postsFolder}/${this.postPrefix}${counter}.html`, function() {
                 counter++;
               });
           } catch(ex) { return counter; }
@@ -32,7 +40,7 @@ class Blog {
   async getBlogs() {
     let blogs = [];
     for(let i = 0; i < this.numBlogs; i++ ) {
-      await $.get("posts/post"+Number(i+1)+".html", function( data ) {
+      await $.get( `${this.postsFolder}/${this.postPrefix}${Number(i+1)}.html`, function( data ) {
         let title = $(data).filter("#title").html();
         let date = $(data).filter("#date").html();
         let tag = $(data).filter("#tag").html();
@@ -56,13 +64,10 @@ class Blog {
           <hr style="margin-top:5%; height:1px; background-color:lightgray; border:none">
       </div>`);
     }
-
-    //This line is specfic to my implemenation
-    this.createFilters($('#content [data-type]'));
   }
 
   loadBlog(num) {
-      $("#content").load(`posts/post${num}.html`, function() {
+      $("#content").load( `${this.postsFolder}/${this.postPrefix}${num}.html`, function() {
       $("#content").prepend(`<a class="back" href="#" onclick="blog.generateListing()">&#8592; Back to Listing</a>`);
       });
   }
@@ -73,13 +78,15 @@ class Blog {
     for(let i = 0; i < keys.length; i++) {
       html+= `<a data-filter="${keys[i]}">${this.filters[keys[i]]}</a>`
     }
-    console.log(html);
+
     $("#filter").append(html);
+    this.createFilters($('#content [data-type]'));
     return html;
   }
 
   createFilters(cards) {
-    filters = $('#filter [data-filter]');
+    let filters = $('#filter [data-filter]');
+    console.log(cards, filters);
     filters.on('click', function(e) {
         filters.removeClass('active');
         $(this).addClass('active');
